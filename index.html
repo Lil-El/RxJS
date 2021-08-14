@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TodoList By RxJS</title>
+        <script src="/node_modules/rxjs/dist/bundles/rxjs.umd.js"></script>
+        <style>
+            body {
+                width: 400px;
+                margin: 0 auto;
+            }
+            details {
+                margin: 20px 0;
+            }
+            dl {
+                padding-left: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <details>
+            <summary>Tool Bar</summary>
+            <hr />
+            <dl>
+                <dt>Ajax:</dt>
+                <dd>a</dd>
+                <dd>b</dd>
+                <dt>Dom:</dt>
+                <dd>c</dd>
+            </dl>
+        </details>
+        <div style="display: flex"><input type="text" autofocus /><button id="button">Submit</button><span id="hint"></span></div>
+        <ul></ul>
+        <script src="./index.js" type="module"></script>
+    </body>
+</html>
