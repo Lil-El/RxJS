@@ -2,5 +2,6 @@
 
 # Q&A
 
-- new Observable : 通过next向下传递；
-- fromEvent：这种值，该如何调用complete去完成
+- fromEvent：如何调用complete去结束
+  - 通过操作符（中间件）调用subscriber.complete()
+  - take(1)

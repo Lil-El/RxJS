@@ -1,27 +1,8 @@
 // import { fromEvent, Observable } from "rxjs";
 const RxJS = rxjs;
-import { Element } from "./js/dom.js";
-const {
-    Observable,
-    Subject,
-    of,
-    fromEvent,
-    fetch,
-    delay,
-    buffer,
-    lift,
-    last,
-    concat,
-    merge,
-    filter,
-    map,
-    catchError,
-    debounce,
-    ajax,
-    repeat,
-    interval,
-    scan,
-} = RxJS;
+import {Element} from './js/dom.js';
+
+const { Observable, Subject, of, EMPTY, fromEvent, bufferWhen, first, fetch, delay, buffer, lift, last, concat, merge, filter, map, catchError, debounce, ajax, repeat, interval, scan, } = RxJS;
 console.log(RxJS);
 
 const myAjax = () =>
@@ -31,7 +12,6 @@ const myAjax = () =>
         }, 300);
     });
 const addTodo = (value) => {
-    console.log(value);
     const ul = Element.select("ul");
     ul.append(new Element("li", value));
 };
@@ -42,11 +22,17 @@ const submit = fromEvent(Element.select("#button"), "click").pipe(delay(200));
 const input = fromEvent(Element.select("input"), "input");
 const getLocalStorageTodoBtn = fromEvent(Element.select("#getLocalStorageTodo"), "click");
 
-const setLocalStorage = (value) => {
-    localStorage.setItem("KEY", value);
-    return new Observable((subscriber) => {
-        subscriber.next(value);
-    });
+const setLocalStorage = () => {
+    return (source) => {
+        return source.lift({
+            call(subscriber, source){
+                source.subscribe((value)=>{
+                    localStorage.setItem("TODO", value);
+                    subscriber.next(value);
+                })
+            }
+        })
+    }
 };
 
 const inputObservable = input.pipe(
@@ -74,27 +60,22 @@ const inputObservable = input.pipe(
             return true;
         }
     }),
-    buffer(submit),
-    map((value) => {
-        return value.pop();
+    buffer(submit), // bufferWhen(()=>submit)
+    map((buffer) => {
+        Element.select("input").value = '';
+        return buffer.pop();
     }),
-    // setLocalStorage((value) => {
-    //     console.log(value);
-    // }),
+    setLocalStorage(),
     catchError((err) => {
         console.log(err);
     })
 );
+
 inputObservable.subscribe({
-    next: (value)=>addTodo(value),
+    next: (value) => value && addTodo(value),
     error() {},
-    complete() {
-        console.log("over");
-    },
+    complete() {},
 });
-// inputObservable.subscribe((value) => {
-//     console.log("你加入了新的事项：" + value);
-// });
 
 // fromPromise
 myAjax().then((value) => {
