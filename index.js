@@ -20,7 +20,6 @@ const submit = fromEvent(Element.select("#button"), "click").pipe(delay(200));
 
 // 输入框：输入时的校验
 const input = fromEvent(Element.select("input"), "input");
-const getLocalStorageTodoBtn = fromEvent(Element.select("#getLocalStorageTodo"), "click");
 
 const setLocalStorage = () => {
     return (source) => {
