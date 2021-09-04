@@ -1,6 +1,6 @@
 // import { fromEvent, Observable } from "rxjs";
 const RxJS = rxjs;
-import {Element} from './js/dom.js';
+import {Element} from './dom.js';
 
 const { Observable, Subject, of, EMPTY, fromEvent, bufferWhen, first, fetch, delay, buffer, lift, last, concat, merge, filter, map, catchError, debounce, ajax, repeat, interval, scan, } = RxJS;
 console.log(RxJS);

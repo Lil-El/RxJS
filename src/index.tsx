@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
+import Mino from './api/operators/transformation'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<Mino />, document.getElementById('root'))
