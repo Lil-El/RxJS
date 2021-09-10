@@ -1,14 +1,6 @@
-// 创建新操作符
-import {interval, take, timer, of, range, concat, from, fromEventPattern, defer} from 'rxjs'
-import {} from 'rxjs/operators'
+// 转换操作符
+import {switchMap, interval, concatMap, map, timer, take, scan, of, pairwise, mergeMap} from 'rxjs'
 
-/**
- * interval: 输入：时间 - 毫秒；输出：数字              ----0----1----2----3----.......
- * timer：
- *        输入：等待时间，间隔； 输出：数字              0----1----2----3----.......
- *        输入：等待时间；      输出：数字              --------0|
- * of、range
- */
 
 export default () => {
     
@@ -19,33 +11,36 @@ export default () => {
         }, 3000)
     })
 
-    let observable1 = interval(1000).pipe(take(10));
-    let timer1 = timer(1000); // timer(0, 1000)
-    let of1 = of(1);
-    let range1 = range(5, 10); // 5,6,7,...,14
-    let from1 = from([1, 3, 5, 2])
-    let fromPromise = from(promise)
-    // fromEvent
-    let addHandler = (handler: EventListener)=>{
-        document.addEventListener("click", handler)
-    }
-    let removeHandler = (handler: EventListener)=>{
-        document.removeEventListener("click", handler);
-    }
-    let subscription = fromEventPattern(addHandler, removeHandler)
-    .subscribe(data => {
+    let map1 = of(1, 2, 3, 4).pipe(map(data => (data + 1)));
+    // scan 累加器
+    let scan1 = of(1, 2, 3, 4).pipe(scan((prev, data, index) => {
+        return prev + data;
+    }, 0));
+    // pairwise 成对输出
+    let pairwise1 = of(1, 2, 3, 4).pipe(pairwise());
+    // switchMap 会退订源Observable，返回新的Observable；循环输出 0 1 2 0 1 2
+    // 每秒输出timer，每隔3s就会退订timer，重新返回timer
+    let switchMap1 = interval(3000).pipe(
+        switchMap(() => timer(0, 1000))
+    );
+    // concatMap 等待源Observable结束，返回新的Observable； 循环输出 concat 0 ~ 6
+    // take致使timer结束，进入下一次interval；如果没有timer，那么concat只执行一次，一直向后相加
+    let concatMap1 = interval(3000).pipe(concatMap((value) => {
+        console.log('concat');
+        return timer(0, 1000).pipe(take(7));
+    }));
+    // mergeMap 不会退订上次的Observable，也不会等待上次结束；
+    // 会并行处理  
+    // mergeMapx 0 1 2 （3s了创建新的timer）
+    //                mergeMapy 0（mergeMapx的3） 1（mergeMapx的4） 2（mergeMapx的5）（3s了创建新的timer）
+    let mergeMap1 = interval(3000).pipe(mergeMap((value) => {
+        console.log('mergeMap');
+        return timer(0, 1000).pipe(take(7));
+    }));
+
+    mergeMap1.subscribe(data => {
         console.log(data);
     })
-    setTimeout(()=>{subscription.unsubscribe()}, 3000)
-
-    // promise本身3s后输出结果；defer只有在subscribe的时候才会输出结果，defer就是为了不让promise立即执行
-    let deferPromise = defer(()=>promise);
-    setTimeout(()=>{
-        console.log('2s 后执行promise');
-        deferPromise.subscribe(data => {
-            console.log(data);
-        })
-    }, 1000)
 
     return <>Hello RxJS</>
 }
