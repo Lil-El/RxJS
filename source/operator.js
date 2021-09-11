@@ -10,6 +10,12 @@ observable.pipe(map(value => {
     return value + 2;
 })).subscribe(data => console.log(data))
 
+function operate(init){
+    return source.lift((this, liftedSource)=>{
+        return init(liftedSource, this); // source, subscriber
+    })
+}
+
 // 2. 实现RxJS的 map operator
 function map(handler){
     /**
@@ -25,6 +31,12 @@ function map(handler){
                     subscriber.next(handler(data))
                 })
             }
+        })
+        // 或者是
+        return operate((source, subscriber)=>{
+            source.subscribe(data=>{
+                subscriber(handler(data))
+            })
         })
     }
 }
