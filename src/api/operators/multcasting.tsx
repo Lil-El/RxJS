@@ -42,14 +42,14 @@ export default () => {
      */
     /** share
      *  Processing:  0
-        subscription 1:  0
-        subscription 1:  0
+            subscription 1:  0
+            subscription 1:  0
         Processing:  1
-        subscription 1:  1
-        subscription 1:  1
+            subscription 1:  1
+            subscription 1:  1
         Processing:  2
-        subscription 1:  4
-        subscription 1:  4
+            subscription 1:  4
+            subscription 1:  4
      */
     source.subscribe(x => console.log('subscription 1: ', x));
     source.subscribe(x => console.log('subscription 1: ', x));
